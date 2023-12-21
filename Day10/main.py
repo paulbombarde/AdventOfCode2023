@@ -36,43 +36,23 @@ def solve2(path):
     track = [S, starts[0]]
     while track[-1] != S:
         track.append(next_point(track, map))
-
-    for p in track:
-        if map[p.x][p.y] == '-':
-            map[p.x][p.y]='+'
-        elif map[p.x][p.y] == '|':
-            map[p.x][p.y] = '*'
-        elif map[p.x][p.y] == 'L':
-            map[p.x][p.y] = '%'
-        elif map[p.x][p.y] == 'F':
-            map[p.x][p.y] = '\\'
-        elif map[p.x][p.y] == 'J':
-            map[p.x][p.y] = '/'
-        elif map[p.x][p.y] == '7':
-            map[p.x][p.y]='='
+    on_track = { p for p in track}
 
     c = 0
     for i,l in enumerate(map):
-        walls = False
-        corner = False
+        inside = None
         for j,v in enumerate(l):
-            if v == '+':
+            if not Point(i,j) in on_track:
+                if inside:
+                    map[i][j] = "I"
+                    c+=1
+                else:
+                    map[i][j] = "0"
                 continue
-            if v == '*':
-                walls = not walls
-                continue
-            if v == '=' or v == '/':
-                corner = True
-                continue
-            if v == '%' or v == '\\':
-                corner = False
-                continue
-            if walls or corner:
-                map[i][j]='I'
-                c += 1
-            else:
-                map[i][j] = 'O'
-        print(l, c)
+
+            if v in ['|', 'F', '7']:
+                inside = None if inside else '|'
+        print(''.join(l), c)
 
     return c
 
@@ -127,8 +107,9 @@ def next_point(track, map):
 
 if __name__ == "__main__":
     #print(solve('sample'))
-    #print(solve('input'))
-    print(solve2('sample2'))
+    print(solve('input'))
+    #print(solve2('sample2'))
     #print(solve2('sample3'))
     #print(solve2('sample4'))
     #print(solve2('sample5'))
+    print(solve2('input'))
